@@ -35,7 +35,6 @@ const SafetySetting = () => {
     MinTopUp: 1,
     TopupGroupRatio: '',
     PayAddress: '',
-    PayNote:'',
     CustomCallbackAddress: '',
     Footer: '',
     WeChatAuthEnabled: '',
@@ -163,6 +162,7 @@ const SafetySetting = () => {
       name === 'TurnstileSecretKey' ||
       name === 'EmailDomainWhitelist' ||
       name === 'TopupGroupRatio' ||
+      name === 'PayNote' ||
       name === 'TelegramBotToken' ||
       name === 'TelegramBotName'
     ) {
@@ -196,6 +196,9 @@ const SafetySetting = () => {
         return;
       }
       await updateOption('TopupGroupRatio', inputs.TopupGroupRatio);
+    }
+    if (originInputs['PayNote'] !== inputs.PayNote) {
+      await updateOption('PayNote', inputs.PayNote);
     }
     let PayAddress = removeTrailingSlash(inputs.PayAddress);
     await updateOption('PayAddress', PayAddress);
@@ -430,7 +433,7 @@ const SafetySetting = () => {
               label='钱包备注'
               name='PayNote'
               onChange={handleInputChange}
-              style={{ minHeight: 0, fontFamily: 'JetBrains Mono, Consolas' }}
+              style={{ minHeight: 250, fontFamily: 'JetBrains Mono, Consolas' }}
               autoComplete='new-password'
               value={inputs.PayNote}
               placeholder='钱包备注'

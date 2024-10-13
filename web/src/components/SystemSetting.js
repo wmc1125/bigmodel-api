@@ -162,6 +162,7 @@ const SystemSetting = () => {
       name === 'TurnstileSecretKey' ||
       name === 'EmailDomainWhitelist' ||
       name === 'TopupGroupRatio' ||
+      name === 'PayNote' ||
       name === 'TelegramBotToken' ||
       name === 'TelegramBotName'
     ) {
@@ -195,6 +196,9 @@ const SystemSetting = () => {
         return;
       }
       await updateOption('TopupGroupRatio', inputs.TopupGroupRatio);
+    }
+    if (originInputs['PayNote'] !== inputs.PayNote) {
+      await updateOption('PayNote', inputs.PayNote);
     }
     let PayAddress = removeTrailingSlash(inputs.PayAddress);
     await updateOption('PayAddress', PayAddress);

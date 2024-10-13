@@ -313,22 +313,22 @@ func GetUserTask(c *gin.Context) {
 }
 
 func QueryAndPrintUserInfo() {
-	startIdx := 0
-	batchSize := 100 // 每次处理100个用户
-	for {
-		users, err := model.GetAllUsers(startIdx, batchSize)
-		if err != nil {
-			common.SysError(fmt.Sprintf("获取用户批次失败: %v", err))
-			return
-		}
-		if len(users) == 0 {
-			break // 没有更多用户了
-		}
-
-		for _, user := range users {
-			common.SysError(fmt.Sprintf("用户ID: %d, 名称: %d", user.Id, user.Quota))
-		}
-
-		startIdx += batchSize
+	batchSize := 2 // 每次处理100个用户
+	// for {
+	users, err := model.GetTaskUsers(batchSize)
+	if err != nil {
+		common.SysError(fmt.Sprintf("获取用户批次失败: %v", err))
+		return
 	}
+	if len(users) == 0 {
+		return // 没有更多用户了
+	}
+
+	for _, user := range users {
+		//更新taskAt时间
+		model.UpdateTaskUsersTime(user.Id)
+		common.SysError(fmt.Sprintf("用户ID: %d, 名称: %d", user.Id, user.Quota))
+	}
+
+	// }
 }

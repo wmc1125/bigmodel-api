@@ -36,6 +36,7 @@ type User struct {
 	AffHistoryQuota  int            `json:"aff_history_quota" gorm:"type:int;default:0;column:aff_history"` // 邀请历史额度
 	InviterId        int            `json:"inviter_id" gorm:"type:int;column:inviter_id;index"`
 	DeletedAt        gorm.DeletedAt `gorm:"index"`
+	TaskAt           gorm.DeletedAt `gorm:"index"`
 }
 
 func (user *User) GetAccessToken() string {
@@ -83,7 +84,18 @@ func GetAllUsers(startIdx int, num int) (users []*User, err error) {
 	err = DB.Unscoped().Order("id desc").Limit(num).Offset(startIdx).Omit("password").Find(&users).Error
 	return users, err
 }
-
+func GetTaskUsers(num int) (users []*User, err error) {
+	err = DB.Unscoped().Order("task_at asc").Limit(num).Offset(0).Omit("password").Find(&users).Error
+	return users, err
+}
+func UpdateTaskUsersTime(userId int) error {
+	user := &User{}
+	err := DB.Model(user).Where("id = ?", userId).Update("task_at", time.Now()).Error
+	if err != nil {
+		return fmt.Errorf("更新用户 %d 的 taskAt 时间失败: %v", userId, err)
+	}
+	return nil
+}
 func SearchUsers(keyword string, group string) ([]*User, error) {
 	var users []*User
 	var err error
